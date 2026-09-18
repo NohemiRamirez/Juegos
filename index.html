@@ -25,32 +25,36 @@
       <p class="story-text">
         Hace mucho tiempo, el Archipiélago Numérico vivía en perfecta armonía…
         hasta que la <strong>Niebla de los Restos de Olvido</strong> desordenó
-        sus cultivos, sus cristales y sus construcciones. Solo un/a aprendiz
-        de explorador/a con el <strong>Grimorio de los Arreglos</strong> puede
+        sus cultivos, sus cristales y sus construcciones. Solo una aprendiz
+        de exploradora con el <strong>Grimorio de los Arreglos</strong> puede
         restaurar el equilibrio.
       </p>
 
-      <p class="story-text small">¿Quién eres tú?</p>
+      <button id="btn-start-journey" class="primary-btn">Comenzar la aventura</button>
+    </div>
+  </section>
 
-      <div class="character-choice">
-        <button class="char-btn" data-char="boy">
-          <span class="char-emoji">🧒</span>
-          <span>Niño explorador</span>
-        </button>
-        <button class="char-btn" data-char="girl">
-          <span class="char-emoji">👧</span>
-          <span>Niña exploradora</span>
-        </button>
+  <!-- ======================= PANTALLA: CÓMIC (reutilizable) ======================= -->
+  <section id="screen-comic" class="screen scene-comic">
+    <div class="comic-frame">
+      <div class="comic-art" id="comic-art">
+        <img id="comic-art-img" src="" alt="" />
+        <div class="comic-placeholder" id="comic-placeholder">
+          <span class="comic-placeholder-icon">🖼️</span>
+          <span class="comic-placeholder-text">Aquí va tu imagen del cómic</span>
+          <span class="comic-placeholder-name" id="comic-placeholder-name"></span>
+        </div>
       </div>
-
-      <button id="btn-start-journey" class="primary-btn" disabled>Comenzar la aventura</button>
+      <p class="comic-caption" id="comic-caption">Texto de la página...</p>
+      <div class="comic-dots" id="comic-dots"></div>
+      <button class="primary-btn" id="comic-next-btn">Siguiente ▶</button>
     </div>
   </section>
 
   <!-- ======================= PANTALLA: MAPA ======================= -->
   <section id="screen-map" class="screen scene-sky">
     <div class="map-header">
-      <div class="hero-chip"><span id="hero-emoji">🧒</span><span id="hero-name">Aprendiz</span></div>
+      <div class="hero-chip"><span id="hero-emoji">👧</span><span id="hero-name">Aprendiz exploradora</span></div>
       <div class="grimoire-chip">📖 Grimorio de los Arreglos</div>
     </div>
     <h2 class="map-title">El Archipiélago Numérico</h2>
@@ -108,14 +112,17 @@
   <!-- ======================= TRANSICIÓN 1: PUENTE ======================= -->
   <section id="screen-bridge" class="screen scene-bridge">
     <h2 class="transition-title">🌬️ El Puente Colgante</h2>
-    <p class="transition-hint">¡El viento sopla fuerte! Mantén presionado el botón (o la pantalla) para que
-    tu explorador se sujete bien fuerte del puente y avance. Si sueltas, ¡el viento te empuja hacia atrás!</p>
+    <p class="transition-hint">Tu exploradora cruza el puente poco a poco. Cuando aparezca la señal de viento
+    fuerte, mantén presionado el botón (o la barra espaciadora) para que se sujete bien fuerte. ¡Cuando el
+    viento se calme, seguirá avanzando sola!</p>
 
-    <div class="bridge-track">
+    <div class="bridge-track" id="bridge-track">
       <div class="bridge-rope"></div>
-      <div class="bridge-walker" id="bridge-walker">🧒</div>
+      <div class="bridge-walker" id="bridge-walker">👧</div>
       <div class="bridge-goal">🔮</div>
+      <div class="wind-gust-fx" id="wind-gust-fx">💨</div>
     </div>
+    <div class="bridge-warning" id="bridge-warning">⚠️ ¡Viento fuerte se acerca!</div>
     <div class="progress-bar-outer">
       <div class="progress-bar-inner" id="bridge-progress"></div>
     </div>
@@ -253,16 +260,24 @@
   <!-- ======================= PANTALLA FINAL ======================= -->
   <section id="screen-end" class="screen scene-victory">
     <div class="card victory-card">
-      <div class="beacon-burst" id="beacon-burst">🏮</div>
+      <div class="comic-art victory-art" id="victory-art">
+        <img id="victory-art-img" src="assets/comic/victoria.png" alt="" />
+        <div class="comic-placeholder" id="victory-placeholder">
+          <span class="comic-placeholder-icon">🖼️</span>
+          <span class="comic-placeholder-text">Aquí va tu imagen de victoria</span>
+          <span class="comic-placeholder-name">assets/comic/victoria.png</span>
+        </div>
+      </div>
       <h1 class="game-title small">¡La niebla se ha disipado!</h1>
       <p class="story-text" id="victory-text">
         El Cristal Mayor vuelve a brillar y su luz recorre todo el Archipiélago Numérico.
         Los cultivos florecen, los cristales cantan y las construcciones se ordenan solas.
         ¡Gracias a ti, la armonía numérica ha vuelto para siempre!
       </p>
-      <p class="story-text small">Has demostrado que dominas las multiplicaciones como un/a verdadero/a
-      Maestro/a Explorador/a del Archipiélago. 🌟</p>
+      <p class="story-text small">Has demostrado que dominas las multiplicaciones como una verdadera
+      Maestra Exploradora del Archipiélago. 🌟</p>
       <button class="primary-btn" id="btn-play-again">Jugar de nuevo</button>
+      <button class="secondary-btn" id="btn-back-to-map">Repasar islas en el mapa</button>
     </div>
   </section>
 

@@ -79,34 +79,138 @@ function showScreen(id) {
 }
 
 const state = {
-  character: null,
   islandsUnlocked: [true, false, false, false], // índices 0-3
   islandsCompleted: [false, false, false, false]
 };
 
 /* ---------------------------------------------------------
-   2. PANTALLA DE INICIO — elegir personaje
+   2. PANTALLA DE INICIO
    --------------------------------------------------------- */
-$$('.char-btn').forEach(btn => {
-  btn.addEventListener('click', () => {
-    ensureAudio();
-    soundClick();
-    $$('.char-btn').forEach(b => b.classList.remove('selected'));
-    btn.classList.add('selected');
-    state.character = btn.dataset.char;
-    $('#btn-start-journey').disabled = false;
-  });
+$('#btn-start-journey').addEventListener('click', () => {
+  ensureAudio();
+  soundClick();
+  refreshMapNodes();
+  showComic('before_island1', () => showScreen('screen-island-1'));
 });
 
-$('#btn-start-journey').addEventListener('click', () => {
-  soundClick();
-  const isGirl = state.character === 'girl';
-  $('#hero-emoji').textContent = isGirl ? '👧' : '🧒';
-  $('#hero-name').textContent = isGirl ? 'Aprendiz exploradora' : 'Aprendiz explorador';
-  $('#bridge-walker').textContent = isGirl ? '👧' : '🧒';
-  refreshMapNodes();
-  showScreen('screen-map');
+/* ---------------------------------------------------------
+   2b. VISOR DE CÓMIC (páginas narrativas entre retos)
+   --------------------------------------------------------- */
+// Cada página puede tener una imagen (ponla en assets/comic/ con ese nombre
+// exacto) y un texto. Si la imagen todavía no existe, se muestra un marcador
+// de posición con el nombre de archivo esperado, para que sea fácil ubicarla
+// después sin tocar el código.
+const COMIC_SEQUENCES = {
+  before_island1: [
+    {
+      img: 'assets/comic/llegada.png',
+      caption: 'Nuestra exploradora desembarca en el Archipiélago Numérico, con el Grimorio de los Arreglos bajo el brazo.'
+    },
+    {
+      img: 'assets/comic/duende.png',
+      caption: 'Un duende asustado corre a su encuentro: "¡Ayúdame! ¡Mis semillas se han desordenado y no sé cómo repartirlas!"'
+    }
+  ],
+  before_bridge: [
+    {
+      img: 'assets/comic/puente.png',
+      caption: 'Con el huerto en orden, la exploradora se dirige hacia el Templo... pero un largo puente colgante se mece con el viento.'
+    }
+  ],
+  before_island2: [
+    {
+      img: 'assets/comic/templo.png',
+      caption: 'Al cruzar el puente, un hada la recibe entre los cristales brillantes del Templo de los Espejos.'
+    }
+  ],
+  before_maze: [
+    {
+      img: 'assets/comic/laberinto.png',
+      caption: 'El camino hacia la Forja se esconde dentro de un laberinto de piedra tallado en la montaña.'
+    }
+  ],
+  before_island3: [
+    {
+      img: 'assets/comic/forja.png',
+      caption: 'Al salir del laberinto, el calor de la Forja de los Elementos ya se siente en el aire.'
+    }
+  ],
+  before_boat: [
+    {
+      img: 'assets/comic/bote.png',
+      caption: 'Con un cristal recién forjado en sus manos, la exploradora zarpa hacia el Faro en un pequeño bote.'
+    }
+  ],
+  before_island4: [
+    {
+      img: 'assets/comic/faro.png',
+      caption: 'Frente a ella se alza el Faro del Cristal Mayor, apagado y envuelto en niebla. Es hora de la prueba final.'
+    }
+  ]
+};
+
+const shownComics = new Set();
+let comic = { pages: [], index: 0, onDone: null };
+
+function showComic(key, onDone) {
+  const pages = COMIC_SEQUENCES[key];
+  if (shownComics.has(key) || !pages || pages.length === 0) {
+    onDone();
+    return;
+  }
+  shownComics.add(key);
+  comic.pages = pages;
+  comic.index = 0;
+  comic.onDone = onDone;
+  renderComicPage();
+  showScreen('screen-comic');
+}
+
+function renderComicPage() {
+  const page = comic.pages[comic.index];
+  const isLast = comic.index === comic.pages.length - 1;
+  const img = $('#comic-art-img');
+  const placeholder = $('#comic-placeholder');
+
+  img.style.display = '';
+  placeholder.style.display = 'none';
+  img.src = page.img;
+  $('#comic-placeholder-name').textContent = page.img;
+  $('#comic-caption').textContent = page.caption;
+  $('#comic-next-btn').textContent = isLast ? 'Comenzar ▶' : 'Siguiente ▶';
+
+  const dots = $('#comic-dots');
+  dots.innerHTML = '';
+  comic.pages.forEach((_, i) => {
+    const dot = document.createElement('span');
+    dot.className = 'comic-dot' + (i === comic.index ? ' active' : '');
+    dots.appendChild(dot);
+  });
+}
+
+$('#comic-art-img').addEventListener('error', () => {
+  $('#comic-art-img').style.display = 'none';
+  $('#comic-placeholder').style.display = 'flex';
 });
+
+$('#victory-art-img').addEventListener('error', () => {
+  $('#victory-art-img').style.display = 'none';
+  $('#victory-placeholder').style.display = 'flex';
+});
+
+function comicAdvance() {
+  soundClick();
+  if (comic.index < comic.pages.length - 1) {
+    comic.index++;
+    renderComicPage();
+  } else {
+    const done = comic.onDone;
+    if (done) done();
+  }
+}
+$('#comic-next-btn').addEventListener('click', comicAdvance);
+$('#comic-art').addEventListener('click', comicAdvance);
+
 
 /* ---------------------------------------------------------
    3. MAPA DEL ARCHIPIÉLAGO
@@ -364,7 +468,7 @@ function finishIsland1() {
   completeIsland(0);
   $('#i1-progress').textContent = I1_TOTAL_EXERCISES;
   soundWin();
-  showScreen('screen-bridge');
+  showComic('before_bridge', () => showScreen('screen-bridge'));
 }
 
 $('#i1-reset').addEventListener('click', () => {
@@ -384,35 +488,77 @@ screenHooks['screen-island-1'] = {
 /* ---------------------------------------------------------
    6. TRANSICIÓN 1 — El Puente Colgante
    --------------------------------------------------------- */
-let bridge = { progress: 0, holding: false, rafId: null, gustTimer: null };
+const BRIDGE_WALK_RATE = 100 / 16000;      // % de progreso por ms caminando (≈16s de caminata pura)
+const BRIDGE_PUSHBACK_RATE = 100 / 2200;    // % que se pierde por ms si no se sujeta durante la ráfaga
+const BRIDGE_WARNING_MS = 1500;             // duración del aviso antes de que llegue el viento
+const BRIDGE_GUST_MS = 2400;                // duración de la ráfaga en sí
+
+let bridge = {
+  progress: 0,
+  phase: 'walking', // 'walking' | 'warning' | 'gust'
+  holding: false,
+  rafId: null,
+  lastTs: 0,
+  phaseElapsed: 0,
+  walkClock: 0,
+  nextGustIn: 4000
+};
 
 function updateBridgeUI() {
   $('#bridge-progress').style.width = bridge.progress + '%';
   $('#bridge-walker').style.left = (4 + bridge.progress * 0.9) + '%';
 }
 
-function bridgeTick() {
-  if (bridge.holding) {
-    bridge.progress = Math.min(100, bridge.progress + 0.55);
-    updateBridgeUI();
-    if (bridge.progress >= 100) {
-      finishBridge();
-      return;
+function bridgeTick(ts) {
+  const dt = bridge.lastTs ? Math.min(ts - bridge.lastTs, 100) : 0; // limita saltos si la pestaña estuvo inactiva
+  bridge.lastTs = ts;
+
+  if (bridge.phase === 'walking') {
+    bridge.progress = Math.min(100, bridge.progress + dt * BRIDGE_WALK_RATE);
+    bridge.walkClock += dt;
+    if (bridge.walkClock >= bridge.nextGustIn) {
+      bridge.phase = 'warning';
+      bridge.phaseElapsed = 0;
+      $('#bridge-warning').classList.add('show');
+      soundBad();
+    }
+  } else if (bridge.phase === 'warning') {
+    bridge.phaseElapsed += dt;
+    bridge.progress = Math.min(100, bridge.progress + dt * BRIDGE_WALK_RATE); // aún da tiempo de reaccionar
+    if (bridge.phaseElapsed >= BRIDGE_WARNING_MS) {
+      bridge.phase = 'gust';
+      bridge.phaseElapsed = 0;
+      $('#bridge-warning').classList.remove('show');
+      $('#bridge-track').classList.add('gust-active');
+      $('#wind-gust-fx').classList.add('active');
+      $('#bridge-wind-msg').textContent = bridge.holding
+        ? '¡Bien sujeta! Aguanta...'
+        : '¡AHORA! Mantén presionado para sujetarte.';
+    }
+  } else if (bridge.phase === 'gust') {
+    bridge.phaseElapsed += dt;
+    if (bridge.holding) {
+      $('#bridge-wind-msg').textContent = '¡Bien sujeta! Aguanta...';
+    } else {
+      bridge.progress = Math.max(0, bridge.progress - dt * BRIDGE_PUSHBACK_RATE);
+      $('#bridge-wind-msg').textContent = '💨 ¡El viento te empuja! Mantén presionado.';
+    }
+    if (bridge.phaseElapsed >= BRIDGE_GUST_MS) {
+      bridge.phase = 'walking';
+      bridge.walkClock = 0;
+      bridge.nextGustIn = randInt(4000, 7500);
+      $('#bridge-track').classList.remove('gust-active');
+      $('#wind-gust-fx').classList.remove('active');
+      $('#bridge-wind-msg').textContent = '';
     }
   }
-  bridge.rafId = requestAnimationFrame(bridgeTick);
-}
 
-function bridgeRelease() {
-  if (!bridge.holding) return;
-  bridge.holding = false;
-  $('#bridge-hold-btn').classList.remove('active');
-  if (bridge.progress < 100) {
-    bridge.progress = 0;
-    updateBridgeUI();
-    soundBad();
-    $('#bridge-wind-msg').textContent = '💨 ¡El viento te empujó hasta el inicio! Vuelve a sujetarte.';
+  updateBridgeUI();
+  if (bridge.progress >= 100) {
+    finishBridge();
+    return;
   }
+  bridge.rafId = requestAnimationFrame(bridgeTick);
 }
 
 function bridgeHold() {
@@ -420,16 +566,21 @@ function bridgeHold() {
   ensureAudio();
   bridge.holding = true;
   $('#bridge-hold-btn').classList.add('active');
-  $('#bridge-wind-msg').textContent = '';
+  if (bridge.phase === 'gust') $('#bridge-wind-msg').textContent = '¡Bien sujeta! Aguanta...';
+}
+
+function bridgeRelease() {
+  if (!bridge.holding) return;
+  bridge.holding = false;
+  $('#bridge-hold-btn').classList.remove('active');
 }
 
 function finishBridge() {
   cancelAnimationFrame(bridge.rafId);
-  clearInterval(bridge.gustTimer);
   bridge.holding = false;
   unlockIsland(1);
   soundWin();
-  showScreen('screen-island-2');
+  showComic('before_island2', () => showScreen('screen-island-2'));
 }
 
 $('#bridge-hold-btn').addEventListener('pointerdown', (e) => { e.preventDefault(); bridgeHold(); });
@@ -447,22 +598,23 @@ screenHooks['screen-bridge'] = {
   onEnter: () => {
     bridge.progress = 0;
     bridge.holding = false;
-    updateBridgeUI();
+    bridge.phase = 'walking';
+    bridge.lastTs = 0;
+    bridge.phaseElapsed = 0;
+    bridge.walkClock = 0;
+    bridge.nextGustIn = randInt(3000, 5000); // la primera ráfaga tarda un poco menos, para que se vea pronto
+    $('#bridge-warning').classList.remove('show');
+    $('#bridge-track').classList.remove('gust-active');
+    $('#wind-gust-fx').classList.remove('active');
     $('#bridge-wind-msg').textContent = '';
-    bridgeTick();
-    bridge.gustTimer = setInterval(() => {
-      if (currentScreenId !== 'screen-bridge') return;
-      if (Math.random() < 0.5 && bridge.holding) {
-        $('#bridge-wind-msg').textContent = '💨 ¡Ráfaga fuerte! Sigue sujetándote...';
-        setTimeout(() => { if ($('#bridge-wind-msg').textContent.includes('Ráfaga')) $('#bridge-wind-msg').textContent = ''; }, 1000);
-      }
-    }, 2200);
+    updateBridgeUI();
+    bridge.rafId = requestAnimationFrame(bridgeTick);
   },
   onExit: () => {
     cancelAnimationFrame(bridge.rafId);
-    clearInterval(bridge.gustTimer);
   }
 };
+
 
 /* ---------------------------------------------------------
    7. ISLA 2 — Templo de los Espejos (conmutatividad AxB=BxA)
@@ -530,7 +682,7 @@ function finishIsland2() {
   completeIsland(1);
   $('#i2-progress').textContent = I2_TOTAL_EXERCISES;
   soundWin();
-  showScreen('screen-maze');
+  showComic('before_maze', () => showScreen('screen-maze'));
 }
 
 screenHooks['screen-island-2'] = {
@@ -580,7 +732,7 @@ function renderMaze() {
       const isExit = r === maze.exit.r && c === maze.exit.c;
       const isPlayer = r === maze.player.r && c === maze.player.c;
       cell.className = 'maze-cell' + (isWall ? ' wall' : '') + (isExit ? ' exit' : '') + (isPlayer ? ' player' : '');
-      if (isPlayer) cell.textContent = state.character === 'girl' ? '👧' : '🧒';
+      if (isPlayer) cell.textContent = '👧';
       else if (isExit) cell.textContent = '⚒️';
       container.appendChild(cell);
     }
@@ -602,7 +754,7 @@ function tryMovePlayer(dr, dc) {
 function finishMaze() {
   unlockIsland(2);
   soundWin();
-  showScreen('screen-island-3');
+  showComic('before_island3', () => showScreen('screen-island-3'));
 }
 
 $$('.dpad-btn[data-dir]').forEach(btn => {
@@ -757,7 +909,7 @@ function finishIsland3() {
   completeIsland(2);
   $('#i3-progress').textContent = I3_TOTAL_EXERCISES;
   soundWin();
-  showScreen('screen-boat');
+  showComic('before_boat', () => showScreen('screen-boat'));
 }
 
 $('#i3-reset').addEventListener('click', () => {
@@ -893,7 +1045,7 @@ function finishBoat() {
   cancelAnimationFrame(boat.rafId);
   unlockIsland(3);
   soundWin();
-  showScreen('screen-island-4');
+  showComic('before_island4', () => showScreen('screen-island-4'));
 }
 
 function boatKeyDown(e) {
@@ -995,6 +1147,7 @@ screenHooks['screen-island-4'] = {
    12. PANTALLA FINAL
    --------------------------------------------------------- */
 $('#btn-play-again').addEventListener('click', () => location.reload());
+$('#btn-back-to-map').addEventListener('click', () => { soundClick(); showScreen('screen-map'); });
 
 /* ---------------------------------------------------------
    Inicio

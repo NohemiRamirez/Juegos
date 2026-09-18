@@ -691,6 +691,130 @@ button {
 }
 .victory-card { border-color: rgba(124,111,207,0.35); }
 
+/* ---------- Cómic narrativo (entre retos) ---------- */
+.scene-comic {
+  background: linear-gradient(180deg, #2E2A5B 0%, #5B4FA3 60%, #F2A65A 100%);
+  color: #FFF8EC;
+  justify-content: center;
+}
+.comic-frame {
+  max-width: 560px;
+  width: 100%;
+  margin: auto;
+  text-align: center;
+}
+.comic-art {
+  position: relative;
+  width: 100%;
+  min-height: 220px;
+  max-height: 78vh;
+  background: #fff;
+  border-radius: var(--radius-lg);
+  border: 6px solid #2B2B2B;
+  box-shadow: var(--shadow-soft);
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.comic-art img {
+  width: auto;
+  height: auto;
+  max-width: 100%;
+  max-height: 78vh;
+  object-fit: contain;
+  display: block;
+  margin: 0 auto;
+}
+.comic-placeholder {
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  color: #B0A6D8;
+  padding: 20px;
+}
+.comic-placeholder-icon { font-size: 2.6rem; }
+.comic-placeholder-text { font-weight: 700; font-size: 0.9rem; color: #7C6FCF; }
+.comic-placeholder-name {
+  font-family: monospace;
+  font-size: 0.78rem;
+  background: #EDEBFA;
+  color: #5B4FA3;
+  padding: 3px 10px;
+  border-radius: 999px;
+}
+.comic-caption {
+  margin: 16px 0 10px;
+  font-size: 1.05rem;
+  line-height: 1.5;
+  font-weight: 600;
+  background: rgba(255,248,236,0.12);
+  border-radius: var(--radius-md);
+  padding: 12px 16px;
+}
+.comic-dots {
+  display: flex;
+  justify-content: center;
+  gap: 6px;
+  margin-bottom: 16px;
+}
+.comic-dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.35);
+}
+.comic-dot.active { background: var(--sun); }
+
+/* ---------- Puente: aviso de viento ---------- */
+.bridge-warning {
+  font-weight: 800;
+  color: #b93b3b;
+  background: rgba(255,255,255,0.85);
+  border-radius: 999px;
+  padding: 8px 18px;
+  margin-bottom: 12px;
+  opacity: 0;
+  transform: translateY(-6px);
+  transition: opacity 0.25s, transform 0.25s;
+  pointer-events: none;
+}
+.bridge-warning.show {
+  opacity: 1;
+  transform: translateY(0);
+  animation: warning-pulse 0.6s ease-in-out infinite;
+}
+@keyframes warning-pulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(232,93,93,0.4); }
+  50% { box-shadow: 0 0 0 8px rgba(232,93,93,0); }
+}
+.wind-gust-fx {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 1.8rem;
+  opacity: 0;
+  pointer-events: none;
+}
+.wind-gust-fx.active {
+  opacity: 1;
+  animation: gust-blow 0.9s ease-in-out infinite;
+}
+@keyframes gust-blow {
+  0% { transform: translate(-70%, -50%); opacity: 0; }
+  40% { opacity: 1; }
+  100% { transform: translate(40%, -50%); opacity: 0; }
+}
+.bridge-track.gust-active .bridge-walker {
+  animation: walker-shake 0.25s ease-in-out infinite;
+}
+@keyframes walker-shake {
+  0%, 100% { transform: translate(0, -70%); }
+  50% { transform: translate(-4px, -70%); }
+}
+
 /* ---------- Utilidades ---------- */
 @media (max-width: 400px) {
   .game-title { font-size: 1.2rem; }

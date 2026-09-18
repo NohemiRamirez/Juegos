@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no" />
+<title>El Secreto del Gran Archipiélago</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Press+Start+2P&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<div id="app">
+
+  <!-- ======================= PANTALLA: INICIO ======================= -->
+  <section id="screen-start" class="screen active scene-sky">
+    <div class="clouds"></div>
+    <div class="card intro-card">
+      <h1 class="game-title">El Secreto del<br>Gran Archipiélago</h1>
+      <p class="subtitle">Una aventura de multiplicaciones</p>
+
+      <div class="grimoire-icon" aria-hidden="true">📖✨</div>
+
+      <p class="story-text">
+        Hace mucho tiempo, el Archipiélago Numérico vivía en perfecta armonía…
+        hasta que la <strong>Niebla de los Restos de Olvido</strong> desordenó
+        sus cultivos, sus cristales y sus construcciones. Solo un/a aprendiz
+        de explorador/a con el <strong>Grimorio de los Arreglos</strong> puede
+        restaurar el equilibrio.
+      </p>
+
+      <p class="story-text small">¿Quién eres tú?</p>
+
+      <div class="character-choice">
+        <button class="char-btn" data-char="boy">
+          <span class="char-emoji">🧒</span>
+          <span>Niño explorador</span>
+        </button>
+        <button class="char-btn" data-char="girl">
+          <span class="char-emoji">👧</span>
+          <span>Niña exploradora</span>
+        </button>
+      </div>
+
+      <button id="btn-start-journey" class="primary-btn" disabled>Comenzar la aventura</button>
+    </div>
+  </section>
+
+  <!-- ======================= PANTALLA: MAPA ======================= -->
+  <section id="screen-map" class="screen scene-sky">
+    <div class="map-header">
+      <div class="hero-chip"><span id="hero-emoji">🧒</span><span id="hero-name">Aprendiz</span></div>
+      <div class="grimoire-chip">📖 Grimorio de los Arreglos</div>
+    </div>
+    <h2 class="map-title">El Archipiélago Numérico</h2>
+    <p class="map-hint">Toca una isla despejada para continuar tu aventura</p>
+
+    <div class="archipelago-map">
+      <button class="island-node" id="node-1" data-target="island-1">
+        <div class="island-art seed-art">🌱</div>
+        <span class="fog"></span>
+        <span class="island-label">1. Isla de la Semilla</span>
+      </button>
+      <button class="island-node locked" id="node-2" data-target="island-2">
+        <div class="island-art temple-art">🔮</div>
+        <span class="fog"></span>
+        <span class="island-label">2. Templo de los Espejos</span>
+      </button>
+      <button class="island-node locked" id="node-3" data-target="island-3">
+        <div class="island-art forge-art">⚒️</div>
+        <span class="fog"></span>
+        <span class="island-label">3. Forja de los Elementos</span>
+      </button>
+      <button class="island-node locked" id="node-4" data-target="island-4">
+        <div class="island-art lighthouse-art">🏮</div>
+        <span class="fog"></span>
+        <span class="island-label">4. El Faro</span>
+      </button>
+    </div>
+  </section>
+
+  <!-- ======================= ISLA 1: SEMILLA ======================= -->
+  <section id="screen-island-1" class="screen scene-farm">
+    <header class="island-header">
+      <button class="back-btn" data-back="screen-map">← Mapa</button>
+      <h2>🌱 Isla de la Semilla</h2>
+      <div class="progress-pill"><span id="i1-progress">0</span>/6</div>
+    </header>
+
+    <div class="npc-banner">
+      <span class="npc-emoji">🧙‍♂️</span>
+      <p id="i1-npc-text">¡Aprendiz! Los surcos de mi huerto están vacíos y no recuerdo cuántas
+      semillas van en cada uno. ¡Ayúdame a repartirlas en partes iguales!</p>
+    </div>
+
+    <div class="exercise-panel">
+      <p class="exercise-prompt" id="i1-prompt">Reparte <strong id="i1-total">12</strong> semillas en <strong id="i1-holes">4</strong> surcos iguales</p>
+      <div class="seed-pile" id="i1-pile"></div>
+      <div class="holes-row" id="i1-holes-row"></div>
+      <p class="equation-preview" id="i1-equation">&nbsp;</p>
+      <button class="secondary-btn" id="i1-reset">↺ Reiniciar semillas</button>
+    </div>
+
+    <div class="feedback-toast" id="i1-toast"></div>
+  </section>
+
+  <!-- ======================= TRANSICIÓN 1: PUENTE ======================= -->
+  <section id="screen-bridge" class="screen scene-bridge">
+    <h2 class="transition-title">🌬️ El Puente Colgante</h2>
+    <p class="transition-hint">¡El viento sopla fuerte! Mantén presionado el botón (o la pantalla) para que
+    tu explorador se sujete bien fuerte del puente y avance. Si sueltas, ¡el viento te empuja hacia atrás!</p>
+
+    <div class="bridge-track">
+      <div class="bridge-rope"></div>
+      <div class="bridge-walker" id="bridge-walker">🧒</div>
+      <div class="bridge-goal">🔮</div>
+    </div>
+    <div class="progress-bar-outer">
+      <div class="progress-bar-inner" id="bridge-progress"></div>
+    </div>
+    <button class="hold-btn" id="bridge-hold-btn">SUJETARSE 🤝</button>
+    <div id="bridge-wind-msg" class="wind-msg"></div>
+  </section>
+
+  <!-- ======================= ISLA 2: TEMPLO ======================= -->
+  <section id="screen-island-2" class="screen scene-temple">
+    <header class="island-header">
+      <button class="back-btn" data-back="screen-map">← Mapa</button>
+      <h2>🔮 Templo de los Espejos</h2>
+      <div class="progress-pill"><span id="i2-progress">0</span>/5</div>
+    </header>
+
+    <div class="npc-banner">
+      <span class="npc-emoji">🧚</span>
+      <p id="i2-npc-text">Los cristales del templo se ordenan en filas y columnas. Los espejos mágicos
+      demuestran que da igual el orden: ¡el resultado es el mismo! Reconstruye el reflejo.</p>
+    </div>
+
+    <div class="exercise-panel">
+      <div class="mirror-stage">
+        <div class="mirror-side">
+          <p class="mirror-label" id="i2-label-a">3 × 5</p>
+          <div class="crystal-grid" id="i2-grid-a"></div>
+        </div>
+        <div class="mirror-divider">✨=✨</div>
+        <div class="mirror-side">
+          <p class="mirror-label" id="i2-label-b">5 × 3</p>
+          <div class="crystal-grid" id="i2-grid-b"></div>
+        </div>
+      </div>
+      <p class="exercise-prompt small">Toca las casillas vacías del lado derecho hasta llenarlo por completo</p>
+      <p class="equation-preview" id="i2-equation">&nbsp;</p>
+    </div>
+
+    <div class="feedback-toast" id="i2-toast"></div>
+  </section>
+
+  <!-- ======================= TRANSICIÓN 2: LABERINTO ======================= -->
+  <section id="screen-maze" class="screen scene-maze">
+    <h2 class="transition-title">🌀 El Laberinto de Piedra</h2>
+    <p class="transition-hint">Usa las flechas o los botones para guiar a tu explorador hasta la salida ⚒️</p>
+    <div id="maze-grid" class="maze-grid"></div>
+    <div class="dpad">
+      <button class="dpad-btn" data-dir="up">▲</button>
+      <div class="dpad-mid">
+        <button class="dpad-btn" data-dir="left">◀</button>
+        <button class="dpad-btn" data-dir="right">▶</button>
+      </div>
+      <button class="dpad-btn" data-dir="down">▼</button>
+    </div>
+  </section>
+
+  <!-- ======================= ISLA 3: FORJA ======================= -->
+  <section id="screen-island-3" class="screen scene-forge">
+    <header class="island-header">
+      <button class="back-btn" data-back="screen-map">← Mapa</button>
+      <h2>⚒️ Forja de los Elementos</h2>
+      <div class="progress-pill"><span id="i3-progress">0</span>/5</div>
+    </header>
+
+    <div class="npc-banner">
+      <span class="npc-emoji">🦫</span>
+      <p id="i3-npc-text">¡Aprendiz herrero! Para forjar un cristal de energía debo separar el metal
+      en dos trozos que, al fundirlos por separado y luego juntarlos, den el mismo resultado.</p>
+    </div>
+
+    <div class="exercise-panel">
+      <p class="exercise-prompt">Forja: <strong id="i3-a">7</strong> × <strong id="i3-b">8</strong></p>
+
+      <div class="forge-slots">
+        <div class="ore-supply" id="i3-supply"></div>
+        <div class="slot-row">
+          <div class="factor-fixed" id="i3-a-chip">7 ×</div>
+          <div class="forge-slot" id="i3-slot1" data-slot="1">?</div>
+          <div class="plus-sign">+</div>
+          <div class="factor-fixed" id="i3-a-chip2">7 ×</div>
+          <div class="forge-slot" id="i3-slot2" data-slot="2">?</div>
+        </div>
+      </div>
+
+      <p class="equation-preview" id="i3-equation">&nbsp;</p>
+
+      <div class="answer-row" id="i3-answer-row" hidden>
+        <p class="exercise-prompt small">¿Cuánto da <span id="i3-final-eq"></span>?</p>
+        <div class="mc-options" id="i3-options"></div>
+      </div>
+      <button class="secondary-btn" id="i3-reset">↺ Vaciar yunque</button>
+    </div>
+
+    <div class="feedback-toast" id="i3-toast"></div>
+  </section>
+
+  <!-- ======================= TRANSICIÓN 3: BOTE ======================= -->
+  <section id="screen-boat" class="screen scene-sea">
+    <h2 class="transition-title">🚤 Mar de las Rocas Flotantes</h2>
+    <p class="transition-hint">Usa las flechas ◀ ▶ o los botones para esquivar los obstáculos y llegar al faro</p>
+    <canvas id="boat-canvas" width="360" height="480"></canvas>
+    <div class="progress-bar-outer">
+      <div class="progress-bar-inner" id="boat-progress"></div>
+    </div>
+    <div class="dpad horizontal">
+      <button class="dpad-btn" data-boatdir="left">◀</button>
+      <button class="dpad-btn" data-boatdir="right">▶</button>
+    </div>
+  </section>
+
+  <!-- ======================= ISLA 4: FARO ======================= -->
+  <section id="screen-island-4" class="screen scene-lighthouse">
+    <header class="island-header">
+      <button class="back-btn" data-back="screen-map">← Mapa</button>
+      <h2>🏮 El Faro del Cristal Mayor</h2>
+      <div class="progress-pill"><span id="i4-progress">0</span>/10</div>
+    </header>
+
+    <div class="npc-banner">
+      <span class="npc-emoji">🦉</span>
+      <p id="i4-npc-text">Este es el último desafío, joven explorador/a. El Cristal Mayor solo brillará
+      de nuevo si demuestras que dominas las multiplicaciones. ¡Confío en ti!</p>
+    </div>
+
+    <div class="exercise-panel">
+      <p class="exercise-prompt big" id="i4-question">6 × 7 = ?</p>
+      <div class="mc-options" id="i4-options"></div>
+      <div class="beacon-meter">
+        <div class="beacon-meter-fill" id="i4-meter"></div>
+      </div>
+    </div>
+
+    <div class="feedback-toast" id="i4-toast"></div>
+  </section>
+
+  <!-- ======================= PANTALLA FINAL ======================= -->
+  <section id="screen-end" class="screen scene-victory">
+    <div class="card victory-card">
+      <div class="beacon-burst" id="beacon-burst">🏮</div>
+      <h1 class="game-title small">¡La niebla se ha disipado!</h1>
+      <p class="story-text" id="victory-text">
+        El Cristal Mayor vuelve a brillar y su luz recorre todo el Archipiélago Numérico.
+        Los cultivos florecen, los cristales cantan y las construcciones se ordenan solas.
+        ¡Gracias a ti, la armonía numérica ha vuelto para siempre!
+      </p>
+      <p class="story-text small">Has demostrado que dominas las multiplicaciones como un/a verdadero/a
+      Maestro/a Explorador/a del Archipiélago. 🌟</p>
+      <button class="primary-btn" id="btn-play-again">Jugar de nuevo</button>
+    </div>
+  </section>
+
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>

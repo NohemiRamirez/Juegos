@@ -1,0 +1,707 @@
+/* =========================================================
+   EL SECRETO DEL GRAN ARCHIPIÉLAGO — estilos
+   Paleta por zona:
+     Cielo/general : #FFF8EC (crema) #2B2B2B (tinta)
+     Isla semilla  : #6FCF97 (hoja) #F2C94C (sol) #A67C52 (tierra)
+     Templo        : #7C6FCF (violeta) #38B6FF (cristal) #2E2A5B (índigo)
+     Forja         : #F2711C (ascua) #D64545 (rojo) #3A3A3A (hierro)
+     Faro          : #1B2A4A (noche) #FFE066 (haz de luz) #3A6EA5 (mar)
+   ========================================================= */
+
+:root {
+  --cream: #FFF8EC;
+  --ink: #2B2B2B;
+  --leaf: #6FCF97;
+  --leaf-dark: #3F9E68;
+  --sun: #F2C94C;
+  --earth: #A67C52;
+  --violet: #7C6FCF;
+  --crystal: #38B6FF;
+  --indigo: #2E2A5B;
+  --ember: #F2711C;
+  --ember-red: #D64545;
+  --iron: #3A3A3A;
+  --night: #1B2A4A;
+  --beacon: #FFE066;
+  --sea: #3A6EA5;
+  --ok: #4CAF50;
+  --bad: #E85D5D;
+  --radius-lg: 22px;
+  --radius-md: 14px;
+  --shadow-soft: 0 10px 24px rgba(0,0,0,0.18);
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  overflow-x: hidden;
+}
+
+body {
+  font-family: 'Baloo 2', system-ui, sans-serif;
+  color: var(--ink);
+  background: var(--cream);
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+}
+
+button {
+  font-family: inherit;
+  cursor: pointer;
+  border: none;
+  background: none;
+  touch-action: manipulation;
+}
+
+#app {
+  position: relative;
+  width: 100%;
+  min-height: 100vh;
+}
+
+.screen {
+  display: none;
+  min-height: 100vh;
+  width: 100%;
+  flex-direction: column;
+  align-items: center;
+  padding: 18px 16px 40px;
+  position: relative;
+}
+.screen.active { display: flex; }
+
+/* ---------- Fondos por escena ---------- */
+.scene-sky {
+  background: linear-gradient(180deg, #BEE7E8 0%, #EAF6E9 55%, #FFF8EC 100%);
+}
+.scene-farm {
+  background: linear-gradient(180deg, #CDEFCB 0%, #FBEFC0 70%, #F3D98B 100%);
+}
+.scene-temple {
+  background: linear-gradient(180deg, #2E2A5B 0%, #5B4FA3 55%, #8C7FD1 100%);
+  color: #FFF8EC;
+}
+.scene-forge {
+  background: linear-gradient(180deg, #3A2620 0%, #6B2E1B 55%, #C9541C 100%);
+  color: #FFF3E4;
+}
+.scene-lighthouse {
+  background: linear-gradient(180deg, #0E1730 0%, #1B2A4A 55%, #274472 100%);
+  color: #FFF8EC;
+}
+.scene-victory {
+  background: radial-gradient(circle at 50% 30%, #FFF3C4 0%, #FFE066 30%, #F2A65A 65%, #7C6FCF 100%);
+}
+.scene-bridge {
+  background: linear-gradient(180deg, #9AD1D6 0%, #CDE9D8 60%, #EAF6E9 100%);
+}
+.scene-maze {
+  background: linear-gradient(180deg, #5B4FA3 0%, #8C7FD1 60%, #C9541C 100%);
+  color: #FFF8EC;
+}
+.scene-sea {
+  background: linear-gradient(180deg, #1B2A4A 0%, #274472 45%, #3A6EA5 100%);
+  color: #FFF8EC;
+}
+
+.clouds {
+  position: absolute; inset: 0;
+  background:
+    radial-gradient(60px 30px at 15% 12%, rgba(255,255,255,0.85), transparent 70%),
+    radial-gradient(80px 34px at 75% 8%, rgba(255,255,255,0.7), transparent 70%),
+    radial-gradient(50px 26px at 45% 20%, rgba(255,255,255,0.6), transparent 70%);
+  pointer-events: none;
+}
+
+/* ---------- Tarjetas / paneles ---------- */
+.card {
+  background: rgba(255,248,236,0.96);
+  color: var(--ink);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-soft);
+  padding: 28px 24px;
+  max-width: 480px;
+  width: 100%;
+  text-align: center;
+  margin: auto;
+  z-index: 2;
+  border: 3px solid rgba(166,124,82,0.25);
+}
+
+.game-title {
+  font-family: 'Press Start 2P', 'Baloo 2', sans-serif;
+  font-size: 1.5rem;
+  line-height: 1.5;
+  color: var(--violet);
+  text-shadow: 2px 2px 0 rgba(166,124,82,0.25);
+  margin: 6px 0 4px;
+}
+.game-title.small { font-size: 1.15rem; }
+
+.subtitle {
+  font-weight: 600;
+  color: var(--earth);
+  margin: 0 0 14px;
+}
+
+.grimoire-icon { font-size: 2.6rem; margin: 6px 0; }
+
+.story-text {
+  font-size: 1rem;
+  line-height: 1.55;
+  margin: 10px 0;
+}
+.story-text.small { font-size: 0.9rem; color: var(--earth); }
+
+.character-choice {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  margin: 18px 0;
+  flex-wrap: wrap;
+}
+
+.char-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  background: #fff;
+  border: 3px solid #E7DEC9;
+  border-radius: var(--radius-md);
+  padding: 14px 18px;
+  font-weight: 700;
+  min-width: 130px;
+  transition: transform 0.15s, border-color 0.15s, background 0.15s;
+}
+.char-btn .char-emoji { font-size: 2.2rem; }
+.char-btn:hover { transform: translateY(-2px); }
+.char-btn.selected {
+  border-color: var(--leaf-dark);
+  background: #EAF9EE;
+  transform: translateY(-2px) scale(1.03);
+}
+
+.primary-btn {
+  background: linear-gradient(180deg, var(--sun), #E0AE2E);
+  color: #4A3400;
+  font-weight: 800;
+  font-size: 1.05rem;
+  padding: 14px 28px;
+  border-radius: 999px;
+  box-shadow: 0 6px 0 #B9861D, var(--shadow-soft);
+  transition: transform 0.1s, box-shadow 0.1s;
+}
+.primary-btn:active { transform: translateY(4px); box-shadow: 0 2px 0 #B9861D; }
+.primary-btn:disabled { opacity: 0.45; cursor: not-allowed; }
+
+.secondary-btn {
+  background: #fff;
+  border: 2px solid #E7DEC9;
+  border-radius: 999px;
+  padding: 8px 18px;
+  font-weight: 700;
+  color: var(--earth);
+  margin-top: 10px;
+}
+
+/* ---------- Mapa del archipiélago ---------- */
+.map-header {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  max-width: 640px;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.hero-chip, .grimoire-chip {
+  background: #fff;
+  border-radius: 999px;
+  padding: 6px 14px;
+  font-weight: 700;
+  font-size: 0.85rem;
+  box-shadow: 0 3px 8px rgba(0,0,0,0.1);
+}
+.map-title { margin: 14px 0 2px; color: var(--violet); text-align: center; }
+.map-hint { color: var(--earth); margin: 0 0 18px; text-align: center; font-size: 0.9rem; }
+
+.archipelago-map {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+  max-width: 560px;
+  width: 100%;
+}
+@media (min-width: 620px) {
+  .archipelago-map { grid-template-columns: repeat(4, 1fr); }
+}
+
+.island-node {
+  position: relative;
+  background: #fff;
+  border-radius: var(--radius-md);
+  padding: 18px 8px 14px;
+  box-shadow: var(--shadow-soft);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  transition: transform 0.15s;
+  border: 3px solid transparent;
+}
+.island-node:not(.locked):hover { transform: translateY(-4px); }
+.island-node.completed { border-color: var(--ok); }
+.island-art { font-size: 2.4rem; }
+.island-label { font-size: 0.78rem; font-weight: 700; text-align: center; color: var(--ink); }
+.fog {
+  position: absolute; inset: 0;
+  border-radius: var(--radius-md);
+  background: repeating-linear-gradient(135deg, rgba(210,210,215,0.92) 0 12px, rgba(190,190,198,0.92) 12px 24px);
+  display: none;
+  align-items: center;
+  justify-content: center;
+}
+.island-node.locked .fog { display: flex; }
+.island-node.locked .fog::after { content: "🔒"; font-size: 1.6rem; }
+.island-node.locked { pointer-events: none; }
+
+/* ---------- Encabezado de isla ---------- */
+.island-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  max-width: 640px;
+  margin-bottom: 8px;
+  gap: 8px;
+}
+.island-header h2 { font-size: 1.15rem; margin: 0; text-align: center; flex: 1; }
+.back-btn {
+  background: rgba(255,255,255,0.85);
+  border-radius: 999px;
+  padding: 6px 12px;
+  font-weight: 700;
+  font-size: 0.85rem;
+  color: var(--ink);
+}
+.progress-pill {
+  background: rgba(255,255,255,0.9);
+  border-radius: 999px;
+  padding: 6px 12px;
+  font-weight: 800;
+  font-size: 0.85rem;
+  min-width: 46px;
+  text-align: center;
+}
+
+.npc-banner {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  background: rgba(255,255,255,0.92);
+  color: var(--ink);
+  border-radius: var(--radius-md);
+  padding: 12px 14px;
+  max-width: 640px;
+  width: 100%;
+  margin-bottom: 14px;
+  box-shadow: var(--shadow-soft);
+}
+.npc-emoji { font-size: 1.8rem; }
+.npc-banner p { margin: 0; font-size: 0.92rem; line-height: 1.4; }
+
+.exercise-panel {
+  background: rgba(255,255,255,0.94);
+  color: var(--ink);
+  border-radius: var(--radius-lg);
+  padding: 18px 16px;
+  max-width: 640px;
+  width: 100%;
+  box-shadow: var(--shadow-soft);
+  text-align: center;
+}
+.exercise-prompt { font-size: 1.05rem; margin: 4px 0 14px; }
+.exercise-prompt.small { font-size: 0.85rem; color: #555; }
+.exercise-prompt.big { font-size: 1.6rem; font-weight: 800; color: var(--night); }
+.equation-preview {
+  font-weight: 800;
+  font-size: 1.05rem;
+  color: var(--leaf-dark);
+  min-height: 1.4em;
+}
+
+.feedback-toast {
+  position: fixed;
+  bottom: 18px;
+  left: 50%;
+  transform: translateX(-50%) translateY(20px);
+  background: var(--ok);
+  color: #fff;
+  font-weight: 800;
+  padding: 10px 22px;
+  border-radius: 999px;
+  box-shadow: var(--shadow-soft);
+  opacity: 0;
+  transition: opacity 0.25s, transform 0.25s;
+  pointer-events: none;
+  z-index: 50;
+  white-space: nowrap;
+}
+.feedback-toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+.feedback-toast.bad { background: var(--bad); }
+
+/* ---------- Isla 1: semillas ---------- */
+.seed-pile {
+  position: relative;
+  min-height: 90px;
+  background: #EFE0BD;
+  border: 3px dashed var(--earth);
+  border-radius: var(--radius-md);
+  margin-bottom: 14px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 10px;
+  touch-action: none;
+}
+.seed {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, #C7E77A, var(--leaf-dark));
+  border: 2px solid #2E6B44;
+  font-size: 1.1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: grab;
+  touch-action: none;
+  z-index: 5;
+}
+.seed.dragging { cursor: grabbing; opacity: 0.85; z-index: 100; }
+
+.holes-row {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-bottom: 10px;
+}
+.hole {
+  width: 76px;
+  min-height: 76px;
+  background: #7A5B39;
+  border: 3px solid #5C4023;
+  border-radius: 50% 50% 46% 46%;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  padding: 6px;
+  position: relative;
+  transition: box-shadow 0.2s;
+}
+.hole.hover-target { box-shadow: 0 0 0 4px var(--sun) inset; }
+.hole.correct { box-shadow: 0 0 0 4px var(--ok) inset; background: #4A7A4E; }
+.hole .seed { width: 22px; height: 22px; cursor: default; }
+.hole-count {
+  position: absolute;
+  bottom: -20px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--earth);
+}
+
+/* ---------- Isla 2: templo ---------- */
+.mirror-stage {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  flex-wrap: wrap;
+  margin-bottom: 12px;
+}
+.mirror-side { text-align: center; }
+.mirror-label { font-weight: 800; margin: 0 0 6px; color: var(--violet); }
+.mirror-divider { font-size: 1.4rem; align-self: center; }
+.crystal-grid {
+  display: grid;
+  gap: 4px;
+  background: #EDEBFA;
+  padding: 6px;
+  border-radius: 10px;
+  border: 2px solid #C9C2EE;
+}
+.crystal-cell {
+  width: 26px;
+  height: 26px;
+  background: #DAD5F5;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.95rem;
+}
+.crystal-cell.filled {
+  background: radial-gradient(circle at 35% 30%, #B3E6FF, var(--crystal));
+}
+.crystal-cell.clickable { cursor: pointer; }
+.crystal-cell.clickable:hover { background: #C6DEFB; }
+
+/* ---------- Puente ---------- */
+.transition-title { text-align: center; margin: 10px 0 4px; }
+.transition-hint {
+  max-width: 480px;
+  text-align: center;
+  font-size: 0.9rem;
+  margin: 0 0 20px;
+  color: var(--ink);
+}
+.scene-maze .transition-hint, .scene-sea .transition-hint { color: #EDEBFF; }
+
+.bridge-track {
+  position: relative;
+  width: 100%;
+  max-width: 420px;
+  height: 90px;
+  margin-bottom: 10px;
+}
+.bridge-rope {
+  position: absolute;
+  top: 50%;
+  left: 0; right: 0;
+  height: 8px;
+  background: repeating-linear-gradient(90deg, #8B5E34 0 18px, #6E4522 18px 22px);
+  border-radius: 4px;
+  transform: translateY(-50%);
+}
+.bridge-walker {
+  position: absolute;
+  top: 50%;
+  left: 4%;
+  transform: translate(0, -70%);
+  font-size: 2rem;
+  transition: left 0.08s linear;
+  filter: drop-shadow(0 3px 3px rgba(0,0,0,0.3));
+}
+.bridge-goal {
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translateY(-60%);
+  font-size: 2rem;
+}
+.progress-bar-outer {
+  width: 100%;
+  max-width: 420px;
+  height: 16px;
+  background: rgba(255,255,255,0.5);
+  border-radius: 999px;
+  overflow: hidden;
+  margin-bottom: 18px;
+  border: 2px solid rgba(0,0,0,0.1);
+}
+.progress-bar-inner {
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(90deg, var(--leaf), var(--leaf-dark));
+  transition: width 0.08s linear;
+}
+.hold-btn {
+  background: linear-gradient(180deg, #7FD99A, var(--leaf-dark));
+  color: #fff;
+  font-weight: 800;
+  font-size: 1.1rem;
+  padding: 22px 44px;
+  border-radius: 999px;
+  box-shadow: 0 6px 0 #2E6B44, var(--shadow-soft);
+  touch-action: none;
+}
+.hold-btn.active { transform: translateY(4px); box-shadow: 0 2px 0 #2E6B44; }
+.wind-msg {
+  margin-top: 12px;
+  font-weight: 800;
+  color: #b93b3b;
+  min-height: 1.4em;
+  text-align: center;
+}
+
+/* ---------- Laberinto ---------- */
+.maze-grid {
+  display: grid;
+  gap: 2px;
+  background: #201A3D;
+  padding: 6px;
+  border-radius: 10px;
+  margin-bottom: 16px;
+  box-shadow: var(--shadow-soft);
+}
+.maze-cell {
+  width: 30px;
+  height: 30px;
+  background: #C9C2EE;
+  border-radius: 3px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
+}
+.maze-cell.wall { background: #4B3F86; }
+.maze-cell.player { background: #FFE066; font-size: 1.1rem; }
+.maze-cell.exit { background: #F2A65A; font-size: 1.1rem; }
+
+.dpad {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+.dpad.horizontal { flex-direction: row; gap: 20px; }
+.dpad-mid { display: flex; gap: 44px; }
+.dpad-btn {
+  width: 52px;
+  height: 52px;
+  background: rgba(255,255,255,0.9);
+  border-radius: 12px;
+  font-size: 1.3rem;
+  font-weight: 800;
+  box-shadow: var(--shadow-soft);
+  color: var(--ink);
+}
+.dpad-btn:active { transform: translateY(2px); }
+
+/* ---------- Forja ---------- */
+.forge-slots { margin: 10px 0 6px; }
+.ore-supply {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-bottom: 16px;
+}
+.ore-chip {
+  width: 40px;
+  height: 40px;
+  border-radius: 8px;
+  background: linear-gradient(180deg, #FFB07C, var(--ember));
+  border: 2px solid #B9490F;
+  color: #fff;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: grab;
+  touch-action: none;
+  z-index: 5;
+}
+.ore-chip.dragging { opacity: 0.85; cursor: grabbing; z-index: 100; }
+.slot-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.factor-fixed {
+  font-weight: 800;
+  font-size: 1.1rem;
+  color: var(--iron);
+}
+.plus-sign { font-size: 1.3rem; font-weight: 800; color: var(--ember-red); }
+.forge-slot {
+  width: 56px;
+  height: 56px;
+  border-radius: 10px;
+  background: #2b2422;
+  border: 3px dashed #B9490F;
+  color: #FFB07C;
+  font-weight: 800;
+  font-size: 1.2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.forge-slot.hover-target { box-shadow: 0 0 0 4px var(--sun) inset; }
+.forge-slot.filled { border-style: solid; background: linear-gradient(180deg, #FFB07C, var(--ember)); color: #fff; }
+.answer-row { margin-top: 14px; }
+.mc-options {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-top: 10px;
+}
+.mc-btn {
+  background: #fff;
+  border: 3px solid #E7DEC9;
+  border-radius: var(--radius-md);
+  padding: 12px 20px;
+  font-weight: 800;
+  font-size: 1.05rem;
+  min-width: 70px;
+  color: var(--ink);
+}
+.mc-btn:hover { transform: translateY(-2px); }
+.mc-btn.correct { background: #DFF5E1; border-color: var(--ok); }
+.mc-btn.wrong { background: #FBE2E2; border-color: var(--bad); }
+
+/* ---------- Bote ---------- */
+#boat-canvas {
+  background: linear-gradient(180deg, #274472, #3A6EA5);
+  border-radius: 14px;
+  box-shadow: var(--shadow-soft);
+  max-width: 100%;
+  touch-action: none;
+  margin-bottom: 12px;
+}
+
+/* ---------- Faro / examen final ---------- */
+.beacon-meter {
+  height: 18px;
+  border-radius: 999px;
+  background: rgba(255,255,255,0.15);
+  overflow: hidden;
+  margin-top: 16px;
+  border: 2px solid rgba(255,255,255,0.3);
+}
+.beacon-meter-fill {
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(90deg, var(--beacon), #FFB84D);
+  transition: width 0.3s;
+  box-shadow: 0 0 12px var(--beacon);
+}
+
+/* ---------- Victoria ---------- */
+.beacon-burst {
+  font-size: 4rem;
+  animation: pulse-glow 1.6s ease-in-out infinite;
+}
+@keyframes pulse-glow {
+  0%, 100% { transform: scale(1); filter: drop-shadow(0 0 6px #FFE066); }
+  50% { transform: scale(1.15); filter: drop-shadow(0 0 28px #FFE066); }
+}
+.victory-card { border-color: rgba(124,111,207,0.35); }
+
+/* ---------- Utilidades ---------- */
+@media (max-width: 400px) {
+  .game-title { font-size: 1.2rem; }
+  .hold-btn { padding: 18px 30px; font-size: 1rem; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+}
+
+:focus-visible {
+  outline: 3px solid var(--crystal);
+  outline-offset: 2px;
+}
